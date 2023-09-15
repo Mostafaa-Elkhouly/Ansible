@@ -11,3 +11,9 @@
       apt:
         name: nginx
         state: latest
+
+    - name: copy index file
+      copy:
+        src: ./index.html
+        dest: /var/www/html/index.html
+      

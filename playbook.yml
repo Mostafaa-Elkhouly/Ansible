@@ -17,12 +17,49 @@
         state: latest
 
     - name: copy index file
+      #tags: always
       copy:
         src: ./index.html
         dest: /var/www/html/index.html
     
     - name: restart nginx service
       #sysvinit
+      service:
+        name: nginx
+        state: restarted
+
+- name: play2
+  hosts: web_servers
+  gather_facts: false
+  tags: play2
+  vars:
+    package_name: nginx
+    package_state: present
+    package_version: 1.18.0-6ubuntu14.4
+  tasks:
+   
+    - name: update ec2 machine
+      apt:
+        update_cache: true
+   
+    - name: Ensure the package "{{ package_name }}" is not installed
+      package:
+        name: "{{ package_name }}"
+        state: absent
+
+    - name: install "{{ package_name }}={{ package_version }}"
+      package:
+        name: "{{ package_name }}={{ package_version }}"
+        state: "{{ package_state }}"
+      become: yes
+
+    - name: copy index file
+      tags: always
+      copy:
+        src: ./index.html
+        dest: /var/www/html/index.html
+    
+    - name: restart nginx service
       service:
         name: nginx
         state: restarted

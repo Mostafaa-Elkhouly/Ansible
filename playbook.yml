@@ -6,3 +6,8 @@
     - name: update ec2 machine
       apt:
         update_cache: true
+
+    - name: install latest nginx
+      apt:
+        name: nginx
+        state: latest

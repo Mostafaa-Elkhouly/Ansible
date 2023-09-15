@@ -1,0 +1,8 @@
+- name: play1
+  hosts: web_servers
+  gather_facts: false
+  tasks:
+
+    - name: update ec2 machine
+      apt:
+        update_cache: true

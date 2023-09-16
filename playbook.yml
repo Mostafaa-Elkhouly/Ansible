@@ -1,64 +1,27 @@
-- name: play1
+- name: play_with_loop
   hosts: web_servers
   gather_facts: false
-  tasks:
-   
-    #apt update
-    - name: update ec2 machine
-      tags: 
-        - update
-        - always
-      apt:
-        update_cache: true
-   
-    #apt install nginx
-    - name: install latest nginx
-      tags: install
-      apt:
-        name: nginx
-        state: latest
-
-    - name: copy index file
-      #tags: always
-      copy:
-        src: ./index.html
-        dest: /var/www/html/index.html
-    
-    - name: restart nginx service
-      #sysvinit
-      service:
-        name: nginx
-        state: restarted
-
-- name: play2
-  hosts: web_servers
-  gather_facts: false
-  tags: play2
   vars:
-    package_name: nginx-light
-    package_state: present
-    package_version: 1.18.0-6ubuntu14.4
+    packages:
+      - nginx
+      - curl
+      - sudo
   vars_files: ./my_vars.yml
   tasks:
    
-    - name: Ensure the package "{{ package_name }}" is not installed
-      package:
-        name: "{{ package_name }}"
-        state: absent
+    - name: update ec2 machine
+      tags: always
+      apt:
+        update_cache: true
 
-    - name: install {{ package_name }}={{ package_version }}
-      package:
-        name: "{{ package_name }}={{ package_version }}"
-        state: "{{ package_state }}"
-      become: yes
+    - name: install packages list
+      apt:
+        name: "{{ item }}"
+        state: latest
+      loop: "{{ packages }}"
 
-    - name: copy index file
-      copy:
-        src: ./index.html
-        dest: /var/www/html/index.html
-    
-    - name: restart nginx service
-      service:
-        name: nginx
-        state: restarted
-    
+    - name: install packages with different states from packages_obj
+      apt:
+        name: "{{ item.package_name }}"
+        state: "{{ item.package_state }}"
+      loop: "{{ packages_obj }}"

@@ -1,2 +1,4 @@
-package_name: nginx
-package_version: 1.18.0-6ubuntu14.4
+packages_obj:
+- { package_name: "nginx", package_state: "latest"}
+- { package_name: "curl", package_state: "absent"}
+- { package_name: "sudo", package_state: "present"}

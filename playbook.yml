@@ -5,7 +5,9 @@
    
     #apt update
     - name: update ec2 machine
-      tags: update
+      tags: 
+        - update
+        - always
       apt:
         update_cache: true
    
@@ -36,25 +38,21 @@
     package_name: nginx
     package_state: present
     package_version: 1.18.0-6ubuntu14.4
+  vars_files: ./my_vars.yml
   tasks:
-   
-    - name: update ec2 machine
-      apt:
-        update_cache: true
    
     - name: Ensure the package "{{ package_name }}" is not installed
       package:
         name: "{{ package_name }}"
         state: absent
 
-    - name: install "{{ package_name }}={{ package_version }}"
+    - name: install {{ package_name }}={{ package_version }}
       package:
         name: "{{ package_name }}={{ package_version }}"
         state: "{{ package_state }}"
       become: yes
 
     - name: copy index file
-      tags: always
       copy:
         src: ./index.html
         dest: /var/www/html/index.html

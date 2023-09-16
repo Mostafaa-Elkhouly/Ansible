@@ -73,20 +73,50 @@
   hosts: web_servers
   tags: play_with_register
   tasks:
-      
-      - name: install nginx
-        apt:
-          name: nginx
-          state: latest
-        register: result
 
-      - name: show result
-        debug:
-          #msg: "{{ result }}"
-          var: result
+    - name: install nginx
+      apt:
+        name: nginx
+        state: latest
+      register: result
 
-      - name: Restart nginx
-        service:
-          name: nginx
-          state: restarted
-        when: result['changed'] == true or result['failed'] == false
+    - name: show result
+      debug:
+        #msg: "{{ result }}"
+        var: result
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
+      when: result['changed'] == true or result['failed'] == false
+
+- name: play with handlers
+  hosts: web_servers
+  gather_facts: false
+  tags: play_with_handlers
+  vars:
+    package_name: nginx
+  vars_files: ./my_vars.yml
+  tasks:
+
+    - name: install {{ package_name }} package
+      apt:
+        name: "{{ package_name }}"
+        state: present
+      changed_when: true
+      notify: copyFiles_handler
+
+  handlers:
+    - name: copyFiles_handler
+      copy:
+        src: "{{ item }}"
+        dest: /var/www/html/
+      loop: "{{ files }}"
+      notify: topic
+
+    - name: Restart service of {{ package_name }}
+      listen: topic
+      service:
+        name: "{{ package_name }}"
+        state: restarted

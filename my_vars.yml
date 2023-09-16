@@ -1,4 +1,13 @@
 packages_obj:
-- { package_name: "nginx", package_state: "latest"}
-- { package_name: "curl", package_state: "absent"}
-- { package_name: "sudo", package_state: "present"}
+  - { package_name: "nginx", package_state: "latest" }
+  - { package_name: "curl", package_state: "absent" }
+  - { package_name: "sudo", package_state: "present" }
+
+files_path: ./handler_files
+
+files:
+  - "{{ files_path }}/index.html"
+  - "{{ files_path }}/clean-blog.min.css"
+  - "{{ files_path }}/bootstrap.min.css"
+  - "{{ files_path }}/bootstrap.bundle.min.js"
+  - "{{ files_path }}/van.jpg"

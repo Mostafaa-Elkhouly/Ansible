@@ -1,4 +1,4 @@
-- name: play_with_loop
+- name: play with loop
   hosts: web_servers
   gather_facts: false
   vars:
@@ -25,3 +25,33 @@
         name: "{{ item.package_name }}"
         state: "{{ item.package_state }}"
       loop: "{{ packages_obj }}"
+
+- name: play with conditions
+  hosts: web_servers
+  gather_facts: true
+  tags: play_with_conditions
+  tasks:
+
+    - name: Install nginx web server on Ubuntu
+      apt:
+        name: nginx
+        state: present
+      when: ansible_facts['distribution'] == "Ubuntu"
+
+    - name: Install httpd web server on CentOs
+      apt:
+        name: httpd
+        state: present
+      when: ansible_facts['distribution'] == "CentOS"
+
+    - name: Restart nginx web server service on Ubuntu
+      service:
+        name: nginx
+        state: restarted
+      when: ansible_facts['distribution'] == "Ubuntu"
+
+    - name: Restart httpd web server service on CentOS
+      service:
+        name: httpd
+        state: restarted
+      when: ansible_facts['distribution'] == "CentOS"

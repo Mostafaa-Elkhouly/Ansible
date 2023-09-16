@@ -120,3 +120,38 @@
       service:
         name: "{{ package_name }}"
         state: restarted
+
+- name: play with templates
+  hosts: web_servers
+  gather_facts: false
+  tags: play_with_templates
+  vars:
+    package_name: nginx
+  vars_files: ./my_vars.yml
+  tasks:
+
+    - name: install {{ package_name }} package
+      apt:
+        name: "{{ package_name }}"
+        state: present
+      changed_when: true
+      notify: copyFiles_handler
+
+    - name: copy template file {{ template_name }} to the target machine
+      template:
+        src: "./template_files/{{ template_name }}"
+        dest: "/var/www/html/{{ template_target_name }}"
+      notify: restartService_handler
+
+  handlers:
+    - name: copyFiles_handler
+      copy:
+        src: "{{ item }}"
+        dest: /var/www/html/
+      loop: "{{ files }}"
+      notify: restartService_handler
+
+    - name: restartService_handler
+      service:
+        name: "{{ package_name }}"
+        state: restarted

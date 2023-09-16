@@ -35,7 +35,7 @@
   gather_facts: false
   tags: play2
   vars:
-    package_name: nginx
+    package_name: nginx-light
     package_state: present
     package_version: 1.18.0-6ubuntu14.4
   vars_files: ./my_vars.yml

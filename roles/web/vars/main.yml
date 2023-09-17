@@ -1,0 +1,12 @@
+package_name: nginx
+
+files:
+#  - "index.html"
+  - "clean-blog.min.css"
+  - "bootstrap.min.css"
+  - "bootstrap.bundle.min.js"
+  - "van.jpg"
+
+template_name: index.html.j2
+template_message: Hello From Ansible Template Jinja2
+template_target_name: index.html

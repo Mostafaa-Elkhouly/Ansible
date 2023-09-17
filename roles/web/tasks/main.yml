@@ -1,0 +1,32 @@
+- name: update ec2 machine
+  tags: always
+  apt:
+    update_cache: true
+
+- name: install {{ package_name }} package
+  apt:
+    name: "{{ package_name }}"
+    state: present
+  changed_when: true
+  #register: install_result
+  notify: Copying_files_handler
+
+- name: Copying {{ template_name }} file to target using template
+  template:
+    src: "{{ template_name }}"
+    dest: /var/www/html/{{template_target_name}}
+  notify: Restart_package_handler
+
+# - name: Copying a list of files from ansible controller to target machine
+#   copy:
+#     src: "{{ item }}"
+#     dest: /var/www/html/
+#   loop: "{{ files }}"
+#   when: install_result['changed'] == true
+#   register: copy_result
+
+# - name: Restart {{ package_name }} package
+#   service:
+#     name: "{{ package_name }}"
+#     state: restarted
+#   when: copy_result['changed'] == true
